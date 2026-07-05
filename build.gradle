@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id('io.qameta.allure') version '4.0.0'
+}
+
+group = 'com.welilf'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def restAssuredVersion = "5.4.0",
+    allureVersion = "2.25.0",
+    lombokVersion = "1.18.30",
+    jacksonVersion = "2.17.0"
+
+dependencies {
+    // REST Assured для отправки запросов
+    testImplementation "io.restassured:rest-assured:$restAssuredVersion"
+    testImplementation "io.restassured:json-schema-validator:$restAssuredVersion"
+
+    // Интеграция REST Assured с Allure
+    testImplementation "io.qameta.allure:allure-rest-assured:$allureVersion"
+
+    // JUnit 5
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+
+    // Lombok для моделей (генерация кода)
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    // Jackson для сериализации/десериализации JSON в POJO
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}
