@@ -12,6 +12,20 @@ repositories {
     maven { url "https://plugins.gradle.org/m2/" }
 }
 
+allure {
+    report {
+        version.set("2.34.0")
+    }
+    adapter {
+        aspectjWeaver.set(true)
+        frameworks {
+            junit5 {
+                adapterVersion.set("2.34.0")
+            }
+        }
+    }
+}
+
 dependencies {
     // REST Assured
     testImplementation "io.rest-assured:rest-assured:5.3.1"
@@ -36,9 +50,15 @@ dependencies {
     testImplementation 'org.aeonbits.owner:owner:1.0.12'
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
+tasks.withType(Test) {
+    useJUnitPlatform()
+
+    testLogging {
+        lifecycle {
+            events "started", "skipped", "failed", "standard_error", "standard_out"
+            exceptionFormat "short"
+        }
+    }
 
 test {
     useJUnitPlatform()
