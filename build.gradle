@@ -31,6 +31,9 @@ dependencies {
 
     // Jackson для JSON
     testImplementation "com.fasterxml.jackson.core:jackson-databind:2.17.0"
+
+    //Owner
+    testImplementation 'org.aeonbits.owner:owner:1.0.12'
 }
 
 tasks.withType(JavaCompile) {
