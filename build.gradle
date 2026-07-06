@@ -59,6 +59,7 @@ tasks.withType(Test) {
             exceptionFormat "short"
         }
     }
+}
 
 test {
     useJUnitPlatform()
