@@ -1,5 +1,6 @@
 package tests;
 
+import api.AuthApiClient;
 import io.qameta.allure.*;
 import models.request.AuthBodyModel;
 import models.response.*;
@@ -7,15 +8,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static specs.UserSpecs.*;
 
 @Epic("Авторизация и списки")
 @Feature("Аутентификация, регистрация и получение списков")
 @Owner("Ponomarev Maksim")
 public class AuthTests {
+
+    AuthApiClient api = new AuthApiClient();
 
     @Test
     @Severity(SeverityLevel.BLOCKER)
@@ -29,12 +30,7 @@ public class AuthTests {
         });
 
         RegisterResponseModel response = step("Отправка POST запроса на /register", () ->
-                given(requestSpec)
-                        .body(body)
-                        .when()
-                        .post("/register")
-                        .then()
-                        .spec(responseSpec200)
+                api.register(body, 200)
                         .extract().as(RegisterResponseModel.class)
         );
 
@@ -56,12 +52,7 @@ public class AuthTests {
         });
 
         LoginResponseModel response = step("Отправка POST запроса на /login", () ->
-                given(requestSpec)
-                        .body(body)
-                        .when()
-                        .post("/login")
-                        .then()
-                        .spec(responseSpec200)
+                        api.login(body, 200)
                         .extract().as(LoginResponseModel.class)
         );
 
@@ -77,12 +68,7 @@ public class AuthTests {
         step("Указание только email (без пароля)", () -> body.setEmail("qa@guru"));
 
         AuthErrorResponseModel response = step("Отправка запроса на /login и ожидание ошибки 400", () ->
-                given(requestSpec)
-                        .body(body)
-                        .when()
-                        .post("/login")
-                        .then()
-                        .spec(responseSpec400)
+                        api.login(body, 400)
                         .extract().as(AuthErrorResponseModel.class)
         );
 
@@ -95,12 +81,7 @@ public class AuthTests {
     @DisplayName("Успешное получение списка пользователей")
     void successGetUsersListTest() {
         UserListResponseModel response = step("Запрос списка пользователей со страницы 2", () ->
-                given(requestSpec)
-                        .when()
-                        .queryParam("page", 2)
-                        .get("/users")
-                        .then()
-                        .spec(responseSpec200)
+                api.getUsersList(2, 200)
                         .extract().as(UserListResponseModel.class)
         );
 

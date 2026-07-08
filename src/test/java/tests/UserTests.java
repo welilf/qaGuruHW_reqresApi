@@ -1,5 +1,6 @@
 package tests;
 
+import api.UsersApiClient;
 import io.qameta.allure.*;
 import models.request.UserBodyModel;
 import models.response.UserResponseModel;
@@ -8,15 +9,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static specs.UserSpecs.*;
 
 @Epic("Управление пользователями")
 @Feature("Операции с пользователями (/api/users)")
 @Owner("Ponomarev Maksim")
 public class UserTests {
+
+    UsersApiClient api = new UsersApiClient();
+    String userId = "2";
 
     @Test
     @Severity(SeverityLevel.BLOCKER)
@@ -30,12 +32,7 @@ public class UserTests {
         });
 
         UserResponseModel response = step("Отправка POST запроса на создание пользователя", () ->
-                given(requestSpec)
-                        .body(body)
-                        .when()
-                        .post("/users")
-                        .then()
-                        .spec(responseSpec201)
+                        api.createUser(body, 201)
                         .extract().as(UserResponseModel.class)
         );
 
@@ -56,12 +53,7 @@ public class UserTests {
         step("Подготовка данных для обновления", () -> body.setJob("sber"));
 
         UserPatchResponseModel response = step("Отправка PATCH запроса на обновление", () ->
-                given(requestSpec)
-                        .body(body)
-                        .when()
-                        .patch("/users/2")
-                        .then()
-                        .spec(responseSpec200)
+                api.patchUser(userId, body, 200)
                         .extract().as(UserPatchResponseModel.class)
         );
 
@@ -77,11 +69,7 @@ public class UserTests {
     @DisplayName("Успешное удаление пользователя")
     void successDeleteUserTest() {
         step("Отправка DELETE запроса и проверка статус-кода 204", () ->
-                given(requestSpec)
-                        .when()
-                        .delete("/users/2")
-                        .then()
-                        .spec(responseSpec204)
+                api.deleteUser(userId, 204)
         );
     }
 }

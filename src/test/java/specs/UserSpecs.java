@@ -24,23 +24,10 @@ public class UserSpecs {
             .setContentType(ContentType.JSON)
             .build();
 
-    public static final ResponseSpecification responseSpec200 = new ResponseSpecBuilder()
-            .expectStatusCode(200)
-            .log(LogDetail.BODY)
-            .build();
-
-    public static final ResponseSpecification responseSpec201 = new ResponseSpecBuilder()
-            .expectStatusCode(201)
-            .log(LogDetail.BODY)
-            .build();
-
-    public static final ResponseSpecification responseSpec204 = new ResponseSpecBuilder()
-            .expectStatusCode(204)
-            .log(LogDetail.BODY)
-            .build();
-
-    public static final ResponseSpecification responseSpec400 = new ResponseSpecBuilder()
-            .expectStatusCode(400)
-            .log(LogDetail.BODY)
-            .build();
-}
+    public static final ResponseSpecification responseSpec (int statusCode) {
+        return new ResponseSpecBuilder()
+                .expectStatusCode(statusCode)
+                .log(LogDetail.BODY)
+                .build();
+    }
+            }
